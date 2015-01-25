@@ -1,0 +1,73 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.ieee_ae.MainActivity" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hello_world" />
+
+    <EditText
+        android:id="@+id/editText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/textView1"
+        android:layout_toLeftOf="@+id/buttonGoCats"
+        android:text="@string/go_cats" >
+
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/numberDisplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/editText1"
+        android:layout_below="@+id/editText1"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="35dp"
+        android:text="@string/number_display"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/buttonGoCats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/editText1"
+        android:layout_alignBottom="@+id/editText1"
+        android:layout_alignParentRight="true"
+        android:onClick="catClicks"
+        android:text="@string/go_cats" />
+
+    <Button
+        android:id="@+id/buttonSubtract"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/numberDisplay"
+        android:layout_alignBottom="@+id/numberDisplay"
+        android:layout_marginLeft="26dp"
+        android:layout_toRightOf="@+id/numberDisplay"
+        android:minHeight="24dp"
+        android:minWidth="42dp"
+        android:text="@string/button_subtract" />
+
+    <Button
+        android:id="@+id/buttonAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/buttonSubtract"
+        android:layout_alignBottom="@+id/buttonSubtract"
+        android:layout_toRightOf="@+id/buttonSubtract"
+        android:minHeight="24dp"
+        android:minWidth="42dp"
+        android:text="@string/button_add" />
+
+</RelativeLayout>
