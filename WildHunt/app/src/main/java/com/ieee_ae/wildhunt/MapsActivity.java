@@ -62,8 +62,11 @@ public class MapsActivity extends FragmentActivity {
      */
     private void setUpMap() {
         LatLng NU = new LatLng(42.056457, -87.675436);
+        LatLng rogersHouse = new LatLng(42.051600, -87.679243);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(NU, 13));
         mMap.addMarker(new MarkerOptions().position(NU).title("Northwestern University"));
+        mMap.addMarker(new MarkerOptions().position(rogersHouse).title("Rogers House")
+                .snippet("Chris Chen lives here!"));
     }
 }
