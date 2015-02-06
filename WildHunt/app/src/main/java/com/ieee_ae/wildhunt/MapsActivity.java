@@ -89,10 +89,17 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback {
 
             getUserID -- returns a unique server ID. Required to create or join sessions.
             createSession -- given user ID, creates a session on the server and returns a key to
-                join the session for others. The server currently only supports one session.
+                join the session for others.
             joinSession -- attempts to joins a room with a key and user ID. Returns 1 on success.
             leaveSession -- attempts to leave a room with a key and user ID. Returns 1 on success.
-                Destroys server session if empty.
+
+        For now, if you don't feel like dealing with creating / joining sessions, there is one session
+        always active on the server with the key "balloon". (e.g. do joinSession("balloon", uid))
+
+            getSessionMembers -- returns a list of all user IDs in a session given the key.
+            addSessionData -- stores data in session (determined via key) that is retrievable through a
+                second dataKey.
+            getSessionData -- retrieves previously stored data. If that's not found, returns 1.
 
     */
     private String getUserID() {
@@ -117,6 +124,27 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback {
         params[0] = key;
         params[1] = uid;
         return (int) synchronousWrapper("leaveSession", params);
+    }
+
+    private String[] getSessionMembers(String key) {
+        Object[] params = new Object[1];
+        params[0] = key;
+        return (String[]) synchronousWrapper("getSessionMembers", params);
+    }
+
+    private int addSessionData(String key, String dataKey, Object data) {
+        Object[] params = new Object[3];
+        params[0] = key;
+        params[1] = dataKey;
+        params[2] = data;
+        return (int) synchronousWrapper("addSessionData", params);
+    }
+
+    private Object getSessionData(String key, String dataKey) {
+        Object[] params = new Object[2];
+        params[0] = key;
+        params[1] = dataKey;
+        return synchronousWrapper("getSessionData", params);
     }
 
     private Object synchronousWrapper(String method, Object[] params) {
