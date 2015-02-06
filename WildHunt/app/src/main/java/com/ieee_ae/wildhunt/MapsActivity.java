@@ -1,7 +1,7 @@
 package com.ieee_ae.wildhunt;
 
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -9,15 +9,25 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity {
+import java.util.concurrent.atomic.AtomicReference;
+
+import im.delight.android.ddp.Meteor;
+import im.delight.android.ddp.MeteorCallback;
+import im.delight.android.ddp.ResultListener;
+
+public class MapsActivity extends FragmentActivity implements MeteorCallback {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private Meteor mMeteor; // Server connection
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+
+        mMeteor = new Meteor("ws://wildhunt.meteor.com/websocket");
+        mMeteor.setCallback(this);
     }
 
     @Override
@@ -68,5 +78,104 @@ public class MapsActivity extends FragmentActivity {
         mMap.addMarker(new MarkerOptions().position(NU).title("Northwestern University"));
         mMap.addMarker(new MarkerOptions().position(rogersHouse).title("Rogers House")
                 .snippet("Chris Chen lives here!"));
+    }
+
+
+    /*
+
+        METEOR SERVER API BELOW
+
+        Usage:
+
+            getUserID -- returns a unique server ID. Required to create or join sessions.
+            createSession -- given user ID, creates a session on the server and returns a key to
+                join the session for others. The server currently only supports one session.
+            joinSession -- attempts to joins a room with a key and user ID. Returns 1 on success.
+            leaveSession -- attempts to leave a room with a key and user ID. Returns 1 on success.
+                Destroys server session if empty.
+
+    */
+    private String getUserID() {
+        return (String) synchronousWrapper("getUserID", null);
+    }
+
+    private String createSession(String uid) {
+        Object[] params = new Object[1];
+        params[0] = uid;
+        return (String) synchronousWrapper("createSession", params);
+    }
+
+    private int joinSession(String key, String uid) {
+        Object[] params = new Object[2];
+        params[0] = key;
+        params[1] = uid;
+        return (int) synchronousWrapper("joinSession", params);
+    }
+
+    private int leaveSession(String key, String uid) {
+        Object[] params = new Object[2];
+        params[0] = key;
+        params[1] = uid;
+        return (int) synchronousWrapper("leaveSession", params);
+    }
+
+    private Object synchronousWrapper(String method, Object[] params) {
+        final AtomicReference<Object> notifier = null;
+        ResultListener callback = new ResultListener() {
+            @Override
+            public void onSuccess(String result) {
+                synchronized (notifier) {
+                    notifier.set(result);
+                    notifier.notify();
+                }
+            }
+
+            @Override
+            public void onError(String s, String s2, String s3) {
+                // handle
+            }
+        };
+        mMeteor.call(method, params, callback) ;
+        synchronized (notifier) {
+            while (notifier.get() == null)
+                try {
+                    notifier.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+        }
+        return notifier.get();
+    }
+
+    // METEOR SERVER STUBS BELOW
+    // YOU CAN IGNORE ALL OF THIS.
+    @Override
+    public void onConnect() {
+
+    }
+
+    @Override
+    public void onDisconnect(int i, String s) {
+
+    }
+
+    @Override
+    public void onDataAdded(String s, String s2, String s3) {
+
+    }
+
+    @Override
+    public void onDataChanged(String s, String s2, String s3, String s4) {
+
+    }
+
+    @Override
+    public void onDataRemoved(String s, String s2) {
+
+    }
+
+    @Override
+    public void onException(Exception e) {
+
     }
 }
