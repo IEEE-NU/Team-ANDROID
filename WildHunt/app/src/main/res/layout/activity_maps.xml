@@ -12,11 +12,30 @@
         tools:layout="@layout/activity_maps" />
 
     <TextView
+        android:id="@+id/stopwatch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:gravity="center"
         android:textSize="20sp"
         android:textColor="@android:color/black"
-        android:text="@string/app_name" />
+        android:text="@string/timerDisplay" />
+
+    <Button
+        android:id="@+id/btnPause"
+        android:layout_width="90dp"
+        android:layout_marginLeft="20dp"
+        android:layout_height="45dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/btnStart"
+        android:text="Pause" />
+
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="90dp"
+        android:layout_height="45dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="120dp"
+        android:text="Start" />
 </FrameLayout>
