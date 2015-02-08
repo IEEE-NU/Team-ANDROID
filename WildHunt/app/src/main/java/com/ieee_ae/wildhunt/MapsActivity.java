@@ -1,6 +1,9 @@
 package com.ieee_ae.wildhunt;
 
 import android.os.Bundle;
+import android.app.Activity;
+import android.os.CountDownTimer;
+import android.widget.TextView
 import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -25,11 +28,27 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
-
         mMeteor = new Meteor("ws://wildhunt.meteor.com/websocket");
         mMeteor.setCallback(this);
+    CountDowntimer timer = new CountDownTimer(30000, 1000) {
+               
+     public void onTick(long millisUntilFinished) {
+    final int j = (int) millisUntilFinished;
+    runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+            TextView textic = (TextView) findViewById(R.id.textView2);
+            textic.setText(j);
+        }
+    });
     }
+     public void onFinish() {
+         mTextField.setText("Finished");
+     }
+    };
+    timer.start();
 
+  }
     @Override
     protected void onResume() {
         super.onResume();
