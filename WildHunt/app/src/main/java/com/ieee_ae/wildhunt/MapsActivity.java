@@ -73,11 +73,50 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback {
     private void setUpMap() {
         LatLng NU = new LatLng(42.056457, -87.675436);
         LatLng rogersHouse = new LatLng(42.051600, -87.679243);
+        LatLng lakeFill = new LatLng(42.055352, -87.670804);
+        LatLng jacobsCenter = new LatLng(42.053954, -87.676683);
+        LatLng blockMuseum = new LatLng(42.052397, -87.672767);
+        LatLng henryCrown = new LatLng(42.059443, -87.672767);
+        LatLng seabury = new LatLng(42.056954, -87.678201);
+        LatLng tech = new LatLng(42.057856, -87.676173);
+        LatLng dearborn = new LatLng(42.056697, -87.675057);
+        LatLng norris = new LatLng(42.053323, -87.672890);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(NU, 13));
-        mMap.addMarker(new MarkerOptions().position(NU).title("Northwestern University"));
-        mMap.addMarker(new MarkerOptions().position(rogersHouse).title("Rogers House")
+        int rand = (int) Math.floor(Math.random()*11) + 1;
+        switch(rand) {
+            case 1:
+                mMap.addMarker(new MarkerOptions().position(NU).title("Northwestern University"));
+                break;
+            case 2:
+                mMap.addMarker(new MarkerOptions().position(rogersHouse).title("Rogers House")
                 .snippet("Chris Chen lives here!"));
+                break;
+            case 3:
+                mMap.addMarker(new MarkerOptions().position(lakeFill).title("Lake Fill"));
+                break;
+            case 4:
+                mMap.addMarker(new MarkerOptions().position(jacobsCenter).title("Donald P. Jacobs Center"));
+                break;
+            case 5:
+                mMap.addMarker(new MarkerOptions().position(blockMuseum).title("Block Museum"));
+                break;
+            case 6:
+                mMap.addMarker(new MarkerOptions().position(henryCrowne).title("Henry Crown Sports Pavilion"));
+                break;
+            case 7:
+                mMap.addMarker(new MarkerOptions().position(seabury).title("Seabury Hall"));
+                break;
+            case 8:
+                mMap.addMarker(new MarkerOptions().position(tech).title("Technological Institute"));
+                break;
+            case 9:
+                mMap.addMarker(new MarkerOptions().position(dearborn).title("Dearborn Observatory"));
+                break;
+            case 10:
+                mMap.addMarker(new MarkerOptions().position(norris).title("Norris University Center"));
+                break;
+        }
     }
 
 
