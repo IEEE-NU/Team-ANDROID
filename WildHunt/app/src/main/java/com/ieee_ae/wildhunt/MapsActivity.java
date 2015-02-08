@@ -1,12 +1,12 @@
 package com.ieee_ae.wildhunt;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.os.Handler;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -20,10 +20,15 @@ import im.delight.android.ddp.Meteor;
 import im.delight.android.ddp.MeteorCallback;
 import im.delight.android.ddp.ResultListener;
 
+//<<<<<<< HEAD
+//=======
+//>>>>>>> FETCH_HEAD
+
 public class MapsActivity extends FragmentActivity implements MeteorCallback {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Meteor mMeteor; // Server connection
+    private TextView mTextField;
 
     // Stopwatch Stuff
     private TextView textTimer;
@@ -63,8 +68,44 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback {
 
         mMeteor = new Meteor("ws://wildhunt.meteor.com/websocket");
         mMeteor.setCallback(this);
-    }
 
+//        CountDownTimer timer = new CountDownTimer(30000, 1000) {
+//
+//            public void onTick(long millisUntilFinished) {
+//                final int j = (int) millisUntilFinished;
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        TextView textic = (TextView) findViewById(R.id.textView2);
+//                        textic.setText(j);
+//                    }
+//                });
+//            }
+//            public void onFinish() {
+//                mTextField.setText("Finished");
+//            }
+//        };
+//        timer.start();
+
+    }
+    private Runnable updateTimerMethod = new Runnable() {
+
+        public void run() {
+            timeInMillies = SystemClock.uptimeMillis() - startTime;
+            finalTime = timeSwap + timeInMillies;
+
+            int seconds = (int) (finalTime / 1000);
+            int minutes = seconds / 60;
+            seconds = seconds % 60;
+            int milliseconds = (int) (finalTime % 1000);
+            textTimer.setText("" + minutes + ":"
+                    + String.format("%02d", seconds) + ":"
+                    + String.format("%03d", milliseconds));
+            myHandler.postDelayed(this, 0);
+        }
+
+    };
+    
     @Override
     protected void onResume() {
         super.onResume();
@@ -108,30 +149,53 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback {
     private void setUpMap() {
         LatLng NU = new LatLng(42.056457, -87.675436);
         LatLng rogersHouse = new LatLng(42.051600, -87.679243);
+        LatLng lakeFill = new LatLng(42.055352, -87.670804);
+        LatLng jacobsCenter = new LatLng(42.053954, -87.676683);
+        LatLng blockMuseum = new LatLng(42.052397, -87.672767);
+        LatLng henryCrown = new LatLng(42.059443, -87.672767);
+        LatLng seabury = new LatLng(42.056954, -87.678201);
+        LatLng tech = new LatLng(42.057856, -87.676173);
+        LatLng dearborn = new LatLng(42.056697, -87.675057);
+        LatLng norris = new LatLng(42.053323, -87.672890);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(NU, 13));
-        mMap.addMarker(new MarkerOptions().position(NU).title("Northwestern University"));
-        mMap.addMarker(new MarkerOptions().position(rogersHouse).title("Rogers House")
+        int rand = (int) Math.floor(Math.random()*11) + 1;
+        switch(rand) {
+            case 1:
+                mMap.addMarker(new MarkerOptions().position(NU).title("Northwestern University"));
+                break;
+            case 2:
+                mMap.addMarker(new MarkerOptions().position(rogersHouse).title("Rogers House")
                 .snippet("Chris Chen lives here!"));
+                break;
+            case 3:
+                mMap.addMarker(new MarkerOptions().position(lakeFill).title("Lake Fill"));
+                break;
+            case 4:
+                mMap.addMarker(new MarkerOptions().position(jacobsCenter).title("Donald P. Jacobs Center"));
+                break;
+            case 5:
+                mMap.addMarker(new MarkerOptions().position(blockMuseum).title("Block Museum"));
+                break;
+            case 6:
+                mMap.addMarker(new MarkerOptions().position(henryCrown).title("Henry Crown Sports Pavilion"));
+                break;
+            case 7:
+                mMap.addMarker(new MarkerOptions().position(seabury).title("Seabury Hall"));
+                break;
+            case 8:
+                mMap.addMarker(new MarkerOptions().position(tech).title("Technological Institute"));
+                break;
+            case 9:
+                mMap.addMarker(new MarkerOptions().position(dearborn).title("Dearborn Observatory"));
+                break;
+            case 10:
+                mMap.addMarker(new MarkerOptions().position(norris).title("Norris University Center"));
+                break;
+        }
     }
 
-    private Runnable updateTimerMethod = new Runnable() {
 
-        public void run() {
-            timeInMillies = SystemClock.uptimeMillis() - startTime;
-            finalTime = timeSwap + timeInMillies;
-
-            int seconds = (int) (finalTime / 1000);
-            int minutes = seconds / 60;
-            seconds = seconds % 60;
-            int milliseconds = (int) (finalTime % 1000);
-            textTimer.setText("" + minutes + ":"
-            + String.format("%02d", seconds) + ":"
-            + String.format("%03d", milliseconds));
-            myHandler.postDelayed(this, 0);
-        }
-
-    };
 
 
     /*
