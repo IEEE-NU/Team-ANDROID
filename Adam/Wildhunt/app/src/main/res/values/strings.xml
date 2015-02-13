@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">WildHunt</string>
+    <string name="timerDisplay">00:00:00</string>
+    <string name="title_activity_maps">Map</string>
+</resources>
