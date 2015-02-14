@@ -1,5 +1,6 @@
 package com.ieee_ae.wildhunt;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
@@ -7,6 +8,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -19,10 +25,17 @@ import im.delight.android.ddp.Meteor;
 import im.delight.android.ddp.MeteorCallback;
 import im.delight.android.ddp.ResultListener;
 
-public class MapsActivity extends FragmentActivity implements MeteorCallback {
+public class MapsActivity extends FragmentActivity implements MeteorCallback,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        LocationListener{
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Meteor mMeteor; // Server connection
+
+    GoogleApiClient mGoogleApiClient;
+    Location mLastLocation;
+    Location mCurrentLocation;
+    LocationRequest mLocationRequest;
 
     // Stopwatch Stuff
     Button startButton;
@@ -36,8 +49,10 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        buildGoogleApiClient();
         setUpMapIfNeeded();
         mMap.setMyLocationEnabled(true);
+        mGoogleApiClient.connect();
 
         // Stopwatch stuff
 
@@ -88,6 +103,55 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback {
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+         mGoogleApiClient = new GoogleApiClient.Builder(this)
+               .addConnectionCallbacks(this)
+               .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    public void onConnected(Bundle connectionHint) {
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+            startLocationUpdates();
+
+    }
+
+
+    public void onConnectionSuspended(int cause)
+    {
+        //Uhhh
+    }
+
+    public void onConnectionFailed(ConnectionResult result)
+    {
+        // Something goes here
+    }
+
+    protected void startLocationUpdates() {
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest, this);
+    }
+
+    public void onLocationChanged(Location location)
+    {
+        mCurrentLocation = location;
+        if (mCurrentLocation.distanceTo(mLastLocation) < 50) {
+            int test = 3;
+        }
+
+
+
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     /**
