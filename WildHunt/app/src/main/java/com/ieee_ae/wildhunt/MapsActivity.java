@@ -26,7 +26,7 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback {
 
     // Stopwatch Stuff
     Button startButton;
-    Button pauseButton;
+    Button resetButton;
     Chronometer timer;
     boolean first_time;
     boolean running;
@@ -54,26 +54,36 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback {
                 } else {
                     elapsedMillis = SystemClock.elapsedRealtime() - elapsedMillis;
                 }
+
                 if (!running) {
+                    startButton.setText("Pause");
                     timer.setBase(elapsedMillis);
                     timer.start();
                     running = true;
+                } else {
+                    timer.stop();
+                    running = false;
+                    elapsedMillis = SystemClock.elapsedRealtime() - timer.getBase();
+                    startButton.setText("Resume");
                 }
             }
         });
-        pauseButton = (Button) findViewById(R.id.btnPause);
-        pauseButton.setOnClickListener(new View.OnClickListener() {
+        resetButton = (Button) findViewById(R.id.btnReset);
+        resetButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                startButton.setText("Start");
+                timer.setBase(SystemClock.elapsedRealtime());
+                timer.start();
                 timer.stop();
+                first_time = true;
                 running = false;
-                elapsedMillis = SystemClock.elapsedRealtime() - timer.getBase();
             }
         });
 
         mMeteor = new Meteor("ws://wildhunt.meteor.com/websocket");
         mMeteor.setCallback(this);
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -127,14 +137,14 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback {
         LatLng norris = new LatLng(42.053323, -87.672890);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(NU, 13));
-        int rand = (int) Math.floor(Math.random()*11) + 1;
-        switch(rand) {
+        int rand = (int) Math.floor(Math.random() * 11) + 1;
+        switch (rand) {
             case 1:
                 mMap.addMarker(new MarkerOptions().position(NU).title("Northwestern University"));
                 break;
             case 2:
                 mMap.addMarker(new MarkerOptions().position(rogersHouse).title("Rogers House")
-                .snippet("Chris Chen lives here!"));
+                        .snippet("Chris Chen lives here!"));
                 break;
             case 3:
                 mMap.addMarker(new MarkerOptions().position(lakeFill).title("Lake Fill"));
@@ -162,8 +172,6 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback {
                 break;
         }
     }
-
-
 
 
     /*
@@ -248,7 +256,7 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback {
                 // handle
             }
         };
-        mMeteor.call(method, params, callback) ;
+        mMeteor.call(method, params, callback);
         synchronized (notifier) {
             while (notifier.get() == null)
                 try {
