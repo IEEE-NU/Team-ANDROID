@@ -1,40 +1,50 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
         tools:context=".MapsActivity"
         tools:layout="@layout/activity_maps" />
 
-    <Button
-        android:id="@+id/btnPause"
-        android:layout_width="90dp"
-        android:layout_height="45dp"
-        android:layout_centerVertical="true"
-        android:layout_gravity="bottom"
-        android:layout_marginLeft="20dp"
-        android:layout_toRightOf="@+id/btnStart"
-        android:text="Pause" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-    <Button
-        android:id="@+id/btnStart"
-        android:layout_width="90dp"
-        android:layout_height="45dp"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_gravity="bottom"
-        android:layout_marginLeft="120dp"
-        android:text="Start" />
+        <Button
+            android:id="@+id/btnReset"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="Reset"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true" />
 
-    <Chronometer
-        android:id="@+id/timer"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom"
-        android:textSize="40dp"/>
-</FrameLayout>
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:text="Start"
+            android:layout_alignTop="@+id/btnReset"
+            android:layout_toRightOf="@+id/btnReset"
+            android:layout_marginLeft="25dp"/>
+
+        <Chronometer
+            android:id="@+id/timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:textSize="40dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
+</LinearLayout>
