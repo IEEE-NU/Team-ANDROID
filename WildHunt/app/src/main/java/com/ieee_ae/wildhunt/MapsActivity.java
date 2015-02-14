@@ -162,15 +162,11 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback {
                 break;
         }
     }
-
-
-
-
     /*
 
         METEOR SERVER API BELOW
 
-        Usage:
+        Functions:
 
             getUserID -- returns a unique server ID. Required to create or join sessions.
             createSession -- given user ID, creates a session on the server and returns a key to
@@ -186,78 +182,75 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback {
                 second dataKey.
             getSessionData -- retrieves previously stored data. If that's not found, returns 1.
 
+        BUT HERE'S THE CATCH:
+        All of these functions are implemented ASYNCHRONOUSLY, which means you can't rely on return values.
+        For example:
+            uid = getUserID()
+            return uid; // uid would not be set by getUserID
+
+        Instead, you have to pass in a ResultListener of the following format
+
+        ResultListener callback = new ResultListener() {
+            @Override
+            public void OnSuccess(String result) {
+                // do stuff with result
+                // e.g. uid = result      
+            }
+            @Override
+            public void OnError(String s, String s2, String 3) {
+            
+            }
+
+        and do stuff from there. And the ResultListener will just fire whenever the operation finishes.
+    }
     */
-    private String getUserID() {
-        return (String) synchronousWrapper("getUserID", null);
+    private void getUserID(ResultListener callback) {
+        meteorWrapper("getUserID", null, callback);
     }
 
-    private String createSession(String uid) {
+    private void createSession(String uid, ResultListener callback) {
         Object[] params = new Object[1];
         params[0] = uid;
-        return (String) synchronousWrapper("createSession", params);
+        meteorWrapper("createSession", params, callback);
     }
 
-    private int joinSession(String key, String uid) {
+    private void joinSession(String key, String uid, ResultListener callback) {
         Object[] params = new Object[2];
         params[0] = key;
         params[1] = uid;
-        return (int) synchronousWrapper("joinSession", params);
+        meteorWrapper("joinSession", params, callback);
     }
 
-    private int leaveSession(String key, String uid) {
+    private void leaveSession(String key, String uid, ResultListener callback) {
         Object[] params = new Object[2];
         params[0] = key;
         params[1] = uid;
-        return (int) synchronousWrapper("leaveSession", params);
+        meteorWrapper("leaveSession", params, callback);
     }
 
-    private String[] getSessionMembers(String key) {
+    private void getSessionMembers(String key, ResultListener callback) {
         Object[] params = new Object[1];
         params[0] = key;
-        return (String[]) synchronousWrapper("getSessionMembers", params);
+        meteorWrapper("getSessionMembers", params, callback);
     }
 
-    private int addSessionData(String key, String dataKey, Object data) {
+    private void addSessionData(String key, String dataKey, Object data, ResultListener callback) {
         Object[] params = new Object[3];
         params[0] = key;
         params[1] = dataKey;
         params[2] = data;
-        return (int) synchronousWrapper("addSessionData", params);
+        meteorWrapper("addSessionData", params, callback);
     }
 
-    private Object getSessionData(String key, String dataKey) {
+    private void getSessionData(String key, String dataKey, ResultListener callback) {
         Object[] params = new Object[2];
         params[0] = key;
         params[1] = dataKey;
-        return synchronousWrapper("getSessionData", params);
+        meteorWrapper("getSessionData", params, callback);
     }
 
-    private Object synchronousWrapper(String method, Object[] params) {
-        final AtomicReference<Object> notifier = null;
-        ResultListener callback = new ResultListener() {
-            @Override
-            public void onSuccess(String result) {
-                synchronized (notifier) {
-                    notifier.set(result);
-                    notifier.notify();
-                }
-            }
-
-            @Override
-            public void onError(String s, String s2, String s3) {
-                // handle
-            }
-        };
+    private void meteorWrapper(String method, Object[] params, ResultListener callback) {
         mMeteor.call(method, params, callback) ;
-        synchronized (notifier) {
-            while (notifier.get() == null)
-                try {
-                    notifier.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-        }
-        return notifier.get();
     }
 
     // METEOR SERVER STUBS BELOW
