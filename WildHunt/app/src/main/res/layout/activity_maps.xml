@@ -11,22 +11,13 @@
         tools:context=".MapsActivity"
         tools:layout="@layout/activity_maps" />
 
-    <TextView
-        android:id="@+id/stopwatch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:gravity="right"
-        android:textSize="20sp"
-        android:textColor="@android:color/black"
-        android:text="@string/timerDisplay" />
-
     <Button
         android:id="@+id/btnPause"
         android:layout_width="90dp"
-        android:layout_marginLeft="20dp"
         android:layout_height="45dp"
         android:layout_centerVertical="true"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="20dp"
         android:layout_toRightOf="@+id/btnStart"
         android:text="Pause" />
 
@@ -36,16 +27,14 @@
         android:layout_height="45dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:layout_gravity="bottom"
         android:layout_marginLeft="120dp"
-        android:text="Start"/>
-    <!--<TextView-->
-        <!--android:id="@+id/textView2"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="top"-->
-        <!--android:gravity="center"-->
-        <!--android:textSize="20sp"-->
-        <!--android:textColor="@android:color/black"-->
-        <!--android:text= "" />-->
-<!-->>>>>>> FETCH_HEAD-->
+        android:text="Start" />
+
+    <Chronometer
+        android:id="@+id/timer"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:textSize="40dp"/>
 </FrameLayout>

@@ -1,12 +1,11 @@
 package com.ieee_ae.wildhunt;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.Chronometer;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -20,91 +19,60 @@ import im.delight.android.ddp.Meteor;
 import im.delight.android.ddp.MeteorCallback;
 import im.delight.android.ddp.ResultListener;
 
-//<<<<<<< HEAD
-//=======
-//>>>>>>> FETCH_HEAD
-
 public class MapsActivity extends FragmentActivity implements MeteorCallback {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Meteor mMeteor; // Server connection
-    private TextView mTextField;
 
     // Stopwatch Stuff
-    private TextView textTimer;
-    private Button startButton;
-    private Button pauseButton;
-    private long startTime = 0L;
-    private Handler myHandler = new Handler();
-    long timeInMillies = 0L;
-    long timeSwap = 0L;
-    long finalTime = 0L;
+    Button startButton;
+    Button pauseButton;
+    Chronometer timer;
+    boolean first_time;
+    boolean running;
+    long elapsedMillis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+        mMap.setMyLocationEnabled(true);
 
         // Stopwatch stuff
-        textTimer = (TextView) findViewById(R.id.stopwatch);
+
+        timer = (Chronometer) findViewById(R.id.timer);
+        running = false;
+        first_time = true;
 
         startButton = (Button) findViewById(R.id.btnStart);
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                startTime = SystemClock.uptimeMillis();
-                myHandler.postDelayed(updateTimerMethod, 0);
-
+                if (first_time) {
+                    elapsedMillis = SystemClock.elapsedRealtime();
+                    first_time = false;
+                } else {
+                    elapsedMillis = SystemClock.elapsedRealtime() - elapsedMillis;
+                }
+                if (!running) {
+                    timer.setBase(elapsedMillis);
+                    timer.start();
+                    running = true;
+                }
             }
         });
         pauseButton = (Button) findViewById(R.id.btnPause);
         pauseButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                timeSwap += timeInMillies;
-                myHandler.removeCallbacks(updateTimerMethod);
-
+                timer.stop();
+                running = false;
+                elapsedMillis = SystemClock.elapsedRealtime() - timer.getBase();
             }
         });
 
         mMeteor = new Meteor("ws://wildhunt.meteor.com/websocket");
         mMeteor.setCallback(this);
-
-//        CountDownTimer timer = new CountDownTimer(30000, 1000) {
-//
-//            public void onTick(long millisUntilFinished) {
-//                final int j = (int) millisUntilFinished;
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        TextView textic = (TextView) findViewById(R.id.textView2);
-//                        textic.setText(j);
-//                    }
-//                });
-//            }
-//            public void onFinish() {
-//                mTextField.setText("Finished");
-//            }
-//        };
-//        timer.start();
-
     }
-    private Runnable updateTimerMethod = new Runnable() {
-
-        public void run() {
-            timeInMillies = SystemClock.uptimeMillis() - startTime;
-            finalTime = timeSwap + timeInMillies;
-
-            int seconds = (int) (finalTime / 1000);
-            int minutes = seconds / 60;
-            seconds = seconds % 60;
-            int milliseconds = (int) (finalTime % 1000);
-            textTimer.setText("" + minutes + ":"
-                    + String.format("%02d", seconds) + ":"
-                    + String.format("%03d", milliseconds));
-            myHandler.postDelayed(this, 0);
-        }
-
-    };
     
     @Override
     protected void onResume() {

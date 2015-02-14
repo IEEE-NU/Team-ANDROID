@@ -101,6 +101,7 @@ public class MapsActivity extends FragmentActivity {
      * <p/>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
+
     private void setUpMap() {
         LatLng NU = new LatLng(42.056457, -87.675436);
         LatLng rogersHouse = new LatLng(42.051600, -87.679243);
@@ -120,8 +121,7 @@ public class MapsActivity extends FragmentActivity {
                 mMap.addMarker(new MarkerOptions().position(NU).title("Northwestern University"));
                 break;
             case 2:
-                mMap.addMarker(new MarkerOptions().position(rogersHouse).title("Rogers House")
-                        .snippet("Chris Chen lives here!"));
+                mMap.addMarker(new MarkerOptions().position(rogersHouse).title("Rogers House").snippet("Chris Chen lives here!"));
                 break;
             case 3:
                 mMap.addMarker(new MarkerOptions().position(lakeFill).title("Lake Fill"));
