@@ -1,5 +1,6 @@
 package com.ieee_ae.wildhunt;
 
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -16,18 +17,18 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 import im.delight.android.ddp.Meteor;
 import im.delight.android.ddp.MeteorCallback;
 import im.delight.android.ddp.ResultListener;
 
-public class MapsActivity extends FragmentActivity implements MeteorCallback,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener{
+public class MapsActivity extends FragmentActivity implements MeteorCallback{//,
+        //GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        //LocationListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Meteor mMeteor; // Server connection
@@ -49,10 +50,10 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        buildGoogleApiClient();
+        //buildGoogleApiClient();
         setUpMapIfNeeded();
         mMap.setMyLocationEnabled(true);
-        mGoogleApiClient.connect();
+        //mGoogleApiClient.connect();
 
         // Stopwatch stuff
 
@@ -104,11 +105,11 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback,
         super.onResume();
         setUpMapIfNeeded();
     }
-
+/*
     protected synchronized void buildGoogleApiClient() {
-         mGoogleApiClient = new GoogleApiClient.Builder(this)
-               .addConnectionCallbacks(this)
-               .addOnConnectionFailedListener(this)
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
     }
@@ -116,18 +117,16 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback,
     public void onConnected(Bundle connectionHint) {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
-            startLocationUpdates();
+        startLocationUpdates();
 
     }
 
 
-    public void onConnectionSuspended(int cause)
-    {
+    public void onConnectionSuspended(int cause) {
         //Uhhh
     }
 
-    public void onConnectionFailed(ConnectionResult result)
-    {
+    public void onConnectionFailed(ConnectionResult result) {
         // Something goes here
     }
 
@@ -136,13 +135,11 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback,
                 mGoogleApiClient, mLocationRequest, this);
     }
 
-    public void onLocationChanged(Location location)
-    {
+    public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         if (mCurrentLocation.distanceTo(mLastLocation) < 50) {
             int test = 3;
         }
-
 
 
     }
@@ -189,19 +186,54 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback,
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        LatLng NU = new LatLng(42.056457, -87.675436);
-        LatLng rogersHouse = new LatLng(42.051600, -87.679243);
-        LatLng lakeFill = new LatLng(42.055352, -87.670804);
-        LatLng jacobsCenter = new LatLng(42.053954, -87.676683);
-        LatLng blockMuseum = new LatLng(42.052397, -87.672767);
-        LatLng henryCrown = new LatLng(42.059443, -87.672767);
-        LatLng seabury = new LatLng(42.056954, -87.678201);
-        LatLng tech = new LatLng(42.057856, -87.676173);
-        LatLng dearborn = new LatLng(42.056697, -87.675057);
-        LatLng norris = new LatLng(42.053323, -87.672890);
+        Marker NU = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(42.056457, -87.675436))
+                .title("Northwestern University"));
+        Marker rogersHouse = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(42.051600, -87.679243))
+                .title("Rogers House")
+                .snippet("Christ Chen lives here!"));
+        Marker lakeFill = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(42.055352, -87.670804))
+                .title("Lake Fill"));
+        Marker jacobsCenter = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(42.053954, -87.676683))
+                .title("Donald P. Jacobs Center"));
+        Marker blockMuseum = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(42.052397, -87.672767))
+                .title("Block Museum"));
+        Marker henryCrown = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(42.059443, -87.672767))
+                .title("Henry Crown Sports Pavilion"));
+        Marker seabury = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(42.056954, -87.678201))
+                .title("Seabury Hall"));
+        Marker tech = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(42.057856, -87.676173))
+                .title("Technological Institite"));
+        Marker dearborn = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(42.056697, -87.675057))
+                .title("Dearborn Observatory"));
+        Marker norris = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(42.053323, -87.672890))
+                .title("Norris University Center"));
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(NU, 13));
-        int rand = (int) Math.floor(Math.random() * 11) + 1;
+        int number_of_location = 10;
+        Marker[] locations = {NU, rogersHouse, lakeFill, jacobsCenter, blockMuseum, henryCrown, seabury, tech, dearborn, norris};
+        for (int i = 0; i < number_of_location; i++) {
+            locations[i].setVisible(false);
+        }
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(NU.getPosition(), 13));
+        int rand = (int) Math.floor(Math.random() * number_of_location);
+        mMap.addCircle(new CircleOptions()
+        .center(locations[rand].getPosition())
+        .radius(50)
+        .fillColor(0x4D0000ff)
+        .strokeColor(0x4D0000ff));
+    }
+
+        /*
         switch (rand) {
             case 1:
                 mMap.addMarker(new MarkerOptions().position(NU).title("Northwestern University"));
@@ -236,6 +268,7 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback,
                 break;
         }
     }
+    */
 
     /*
 
@@ -279,6 +312,7 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback,
         and do stuff from there. And the ResultListener will just fire whenever the operation finishes.
     }
     */
+
     private void getUserID(ResultListener callback) {
         meteorWrapper("getUserID", null, callback);
     }
@@ -325,7 +359,7 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback,
     }
 
     private void meteorWrapper(String method, Object[] params, ResultListener callback) {
-        mMeteor.call(method, params, callback) ;
+        mMeteor.call(method, params, callback);
     }
 
     // METEOR SERVER STUBS BELOW
