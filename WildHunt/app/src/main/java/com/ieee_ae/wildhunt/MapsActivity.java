@@ -1,6 +1,5 @@
 package com.ieee_ae.wildhunt;
 
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -26,9 +25,9 @@ import im.delight.android.ddp.Meteor;
 import im.delight.android.ddp.MeteorCallback;
 import im.delight.android.ddp.ResultListener;
 
-public class MapsActivity extends FragmentActivity implements MeteorCallback{//,
-        //GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        //LocationListener {
+public class MapsActivity extends FragmentActivity implements MeteorCallback,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Meteor mMeteor; // Server connection
@@ -37,6 +36,9 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback{//,
     Location mLastLocation;
     Location mCurrentLocation;
     LocationRequest mLocationRequest;
+
+    //Test
+    Location ford = new Location("");
 
     // Stopwatch Stuff
     Button startButton;
@@ -50,10 +52,12 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback{//,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        //buildGoogleApiClient();
+        buildGoogleApiClient();
         setUpMapIfNeeded();
         mMap.setMyLocationEnabled(true);
-        //mGoogleApiClient.connect();
+        ford.setLatitude(42.056);
+        ford.setLongitude(82.056826);
+        mGoogleApiClient.connect();
 
         // Stopwatch stuff
 
@@ -105,7 +109,7 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback{//,
         super.onResume();
         setUpMapIfNeeded();
     }
-/*
+
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -117,13 +121,13 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback{//,
     public void onConnected(Bundle connectionHint) {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
+        createLocationRequest();
         startLocationUpdates();
-
     }
 
 
     public void onConnectionSuspended(int cause) {
-        //Uhhh
+        //Something goes here
     }
 
     public void onConnectionFailed(ConnectionResult result) {
@@ -137,11 +141,9 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback{//,
 
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
-        if (mCurrentLocation.distanceTo(mLastLocation) < 50) {
+        if (mCurrentLocation.distanceTo(ford) < 50) {
             int test = 3;
         }
-
-
     }
 
     protected void createLocationRequest() {
