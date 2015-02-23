@@ -55,8 +55,8 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback,
         buildGoogleApiClient();
         setUpMapIfNeeded();
         mMap.setMyLocationEnabled(true);
-        ford.setLatitude(42.056);
-        ford.setLongitude(82.056826);
+        ford.setLatitude(42.057027);
+        ford.setLongitude(-87.676538);
         mGoogleApiClient.connect();
 
         // Stopwatch stuff
@@ -142,7 +142,10 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback,
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         if (mCurrentLocation.distanceTo(ford) < 50) {
-            int test = 3;
+            // If the current location is within 50 meters of the target location
+            // (in this case, Ford), then there should be a popup window that
+            // informs the user they have arrived at the destination, and when the
+            // user selects "OK," the window closes and the app selects a new target location.
         }
     }
 
