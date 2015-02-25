@@ -4,5 +4,13 @@
     <string name="app_name">WildHunt</string>
     <string name="timerDisplay">00:00:00</string>
     <string name="title_activity_maps">Map</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="location_found_dialog">You are here!</string>
+    <string name="location_found_content">Congratulations! Move on to the next place.</string>
+    <string name="location_found_button">Continue</string>
+    <string name="service_not_available">Geocoding error service is not available due to a network error.</string>
+    <string name="invalid_lat_long_used">Invalid latitutde and longtitude provided.</string>
+    <string name="no_address_found">Geocoder could not find address.</string>
+    <string name="address_found">Geocoder found a matching address.</string>
 
 </resources>

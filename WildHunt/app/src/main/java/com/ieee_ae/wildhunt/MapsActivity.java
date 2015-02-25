@@ -3,6 +3,7 @@ package com.ieee_ae.wildhunt;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
@@ -27,11 +28,12 @@ import im.delight.android.ddp.ResultListener;
 
 public class MapsActivity extends FragmentActivity implements MeteorCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener, LocationFoundDialogFragment.LocationFoundDialogListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Meteor mMeteor; // Server connection
 
+    // Location Stuff
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Location mCurrentLocation;
@@ -52,12 +54,13 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        buildGoogleApiClient();
         setUpMapIfNeeded();
         mMap.setMyLocationEnabled(true);
-        ford.setLatitude(42.057027);
-        ford.setLongitude(-87.676538);
+        buildGoogleApiClient();
         mGoogleApiClient.connect();
+        //42.059617, -87.676172
+        ford.setLatitude(42.059617);
+        ford.setLongitude(-87.676172);
 
         // Stopwatch stuff
 
@@ -110,6 +113,8 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback,
         setUpMapIfNeeded();
     }
 
+    // Location Methods
+
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -141,8 +146,9 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback,
 
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
-        if (mCurrentLocation.distanceTo(ford) < 50) {
-            // If the current location is within 50 meters of the target location
+        if (mCurrentLocation.distanceTo(ford) < 100) {
+            showLocationFoundDialog();
+            // If the current location is within 100 meters of the target location
             // (in this case, Ford), then there should be a popup window that
             // informs the user they have arrived at the destination, and when the
             // user selects "OK," the window closes and the app selects a new target location.
@@ -154,6 +160,21 @@ public class MapsActivity extends FragmentActivity implements MeteorCallback,
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    public void showLocationFoundDialog() {
+        // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new LocationFoundDialogFragment();
+        dialog.show(this.getSupportFragmentManager(), "LocationFoundDialogFragment");
+    }
+
+    // The dialog fragment receives a reference to this Activity through the
+    // Fragment.onAttach() callback, which it uses to call the following methods
+    // defined by the NoticeDialogFragment.NoticeDialogListener interface
+    @Override
+    public void onDialogContinueClick(DialogFragment dialog) {
+        // User touched the dialog's positive button
+
     }
 
     /**
